@@ -9,21 +9,27 @@ import java.util.logging.Logger;
 
 public class Range {
 	private static int sizeStash=20;
+	private static AtomicBoolean cartOnField = new AtomicBoolean(); //whether or not Bollie is on the field
         //
         private static BallStash stash;
         private static int noOfBalls; 
 
 	//ADD variable: ballsOnField collection;
-        private static BlockingQueue <golfBall> ballsOnField = new ArrayBlockingQueue <golfBall> (sizeStash);
+        private static ArrayBlockingQueue <golfBall> ballsOnField = new ArrayBlockingQueue <golfBall> (sizeStash);
+        
+	//Add constructors
+	public Range(){
+            
+        }
         
 	//ADD method: collectAllBallsFromField(golfBall [] ballsCollected)
-        synchronized public static ArrayList<golfBall> collectAllBallsFromField(ArrayList<golfBall> ballsCollected){
+        public static ArrayList<golfBall> collectAllBallsFromField(ArrayList<golfBall> ballsCollected){
             //cartOnField.set(true);
-            //int i = 0;
+            int i = 0;
             for (golfBall ball : ballsOnField){ //for each ball in balls collected, remove the ball from bellsOnField
-                ballsCollected.add(ball);
-                ballsOnField.remove(ball);
-                //i++;
+                ballsCollected.add(ballsOnField.peek());
+                ballsOnField.remove(ballsOnField.peek());
+                i++;
             }
             return ballsCollected;
             //cartOnField.set(false);
@@ -34,9 +40,10 @@ public class Range {
         }
 
 	//ADD method: hitBallOntoField(golfBall ball)
-        synchronized public static void hitBallOntoField(golfBall ball){
+        public static void hitBallOntoField(golfBall ball){
             ballsOnField.add(ball);
-            //noOfBalls = stash.getSizeBucket();         
+            //noOfBalls = stash.getSizeBucket();
+           
         }
         //
         
